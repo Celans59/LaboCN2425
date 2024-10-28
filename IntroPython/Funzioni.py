@@ -1,6 +1,6 @@
 
 # Le funzioni le conosciamo bene! Sono importanti, ovviamente, anche in Python
-# Una funzione è un oggetto che prende in inresso dei valori (INPUT), esegue delle operazioni su di essi e restituisce
+# Una funzione è un oggetto che prende in ingresso dei valori (INPUT), esegue delle operazioni su di essi e restituisce
 # un risultato (OUTPUT). Ne abbiamo già usate molte fino ad ora: print(), len(), type(), ...
 
 # Vediamo la loro sintassi: 
@@ -97,7 +97,7 @@ def calcolOperazione(n1: float, n2: float, op: str = "Somma") -> float:
 
 a: int = 3
 b: int = 1
-somma = calcolOperazione(a, b)  # op = "somma" di dafult, quindi funziona anche così per la somma
+somma = calcolOperazione(a, b)  # op = "somma" di default, quindi funziona anche così per la somma
 differenza = calcolOperazione(a, b, op = "Differenza")
 prodotto = calcolOperazione(a, b, op = "Prodotto")
 rapporto = calcolOperazione(a, b, op = "Rapporto")
