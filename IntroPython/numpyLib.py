@@ -110,31 +110,156 @@ print(pr, end="\n\n")
 '''
 E per quanto riguarda i vettori? Bisogna fare una distinsione tra i tipi di vettori:
 -> vettore classico a dimensione singola, la cui shape sarà uguale a qualcosa tipo (n, ) (come già visto prima)
--> vettore colonna, come se fosse una matrice ad una sola colonna e numero di righe pari alla sua lunghezza.
+-> vettore colonna, come se fosse una matrice ad una sola colonna e numero di righe pari alla sua lunghezza. shape(n, 1)
+-> vettore riga, come se fosse una matrice ad una sola riga e numero di colonne pari alla sua lunchezza. shape(1, n)
+Occhio a questa distinsione!! Alcune funzionalità di numpy lavorano diversamente rispetto alla natura del vettore!!
+Ad esempio, l’operatore "@" restituirà il prodotto scalare standard tra vettori nel caso in cui i due elementi moltiplicati
+siano due vettori classici, restituirà errore nel caso in cui siano due vettori colonna,
+e darà il prodotto scalare standard se i vettori saranno il primo un vettore riga, il secondo un vettore colonna.
 '''
+# Definiamo due vettori classici
+m = np.array([1, -1, 1])
+n = np.array([0, 1, 1])
+print(m.shape, n.shape) # Controlliamo che siano vettori classici
+# Calcoliamone il prodotto scalare
+print(m @ n)
+# Definiamo la loro versione come vettori colonna
+m = np.array([[1], [-1], [1]])
+n = np.array([[0], [1], [1]])
+print(m.shape, n.shape, end="\n\n")
+# Calcoliamone il prodotto scalare
+# print(m @ n) --> Errore
 
 
+# è possibile definire degli ndarray che contengono valori booleani (0 per il False e 1 per il True)
+# Molto utili per svolgere in maniera efficiente operazioni di filtraggio di contenuti
+# Sarà, quindi, possibile eseguire operazioni booleane classiche (AND, OR e NOT) e di confronto (=, !=, ...) 
+# tra ndarray booleani, che verranno applicate elemento per elemento
+
+# Definiamo 3 vettori casuali
+h = np.random.rand(10)
+j = np.random.rand(10)
+k = np.random.rand(10)
+# Generiamo il vettore booleano 'l' che segue l'operazione booleana >=
+l = h >= j
+print(l)
+# ed il vettore 'o' che segue la stessa logica di prima
+o = j >= k
+print(o)
+# Ed ora li uniamo con un'operazione '&' elemento per elemento!!
+print(l & o, end="\n\n")
 
 
+# SLICING su ndarray
+# Su vettori classici funziona esattamente come per liste e tuple, la cui notazione v[inizio:fine] restituisce 
+# gli elementi di v da inizio a fine - 1.
+aa = np.array([0, 1, -1, 2, 1, -1])
+ww = aa[0:3]
+print(ww, end="\n\n")
+
+'''
+Il vero vantaggio degli ndarray, rispetto a liste e tuple, è la possibilità di utilizzare gli ndarray booleani
+per filtrare gli elementi di un altro ndarray. 
+Infatti, se all’interno delle parentesi quadre inseriamo un array booleano della stessa dimensione dell’array 
+su cui stiamo facendo slicing, questo ci ritornerà tutti gli elementi dell’array che corrispondono alle posizioni dei True.
+'''
+jj = np.array([0, 1, -1, 2, 1, -1]) # Array di esempio
+print(jj)
+
+bb = np.array([True, True, False, True, False, False])  # Vettore booleano
+print(bb)
+
+print(jj[bb], end="\n\n") # Slicing
+
+# Questo ci permette di eseguire in maniera estramamente rapida e in un linguaggio molto vicino a quello naturale, 
+# operazioni condizionali su vettori.
+# Vediamo ad esempio come prendere un vettore casuale, e porre a 0 tutti i suoi valori negativi 
+# (operazione, nota come proiezione sull’asse positivo, molto comune in alcuni problemi di algebra lineare).
+xx = np.random.randn(8) # cond randN generiamo anche valori negativi!
+print(xx)
+# Proiettiamo sull'asse positivo!!
+xx[xx < 0] = 0
+print(xx, end="\n\n")
 
 
+# SLICING SU MATRICI
+# Lo slicing sulle matrici prevede l'inserimento, tra le [ ], di due indici (della forma inizio:fine:step):
+# uno per gli indici di riga ed uno per gli indici di colonna
+# Vediamo ad esempio come estrarre, da una matrice A di shape (3, 3), la sua sottomatrice principale di ordine 2, 
+# ovvero la sottomatrice di dimensione (2, 2) che si trova nell’angolo in alto a sinistra di A.
+M = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]) # Creiamo la matrice
+# Slicing
+P = M[:2, :2]
+print(P, end="\n\n")
 
 
+'''
+Ultima proprietà che vediamo degli ndarray, sono tutte le operazioni comunemente effettuate nell’algebra lineare su di essi, 
+come ad esempio il calcolo della norma, dell’inversa, del rango, della trasposta, oltre che di operazioni di utilità 
+come la funzione reshape, che modifica la forma di un vettore o matrice, senza cambiarne il contenuto.
+Necessario il sottopacchetto di numpy: np.linalg --> implementa varie operazioni dell'algebra lineare
+
+Vediamo alcune operazioni:
+-> np.linalg.norm(a, p): Calcola la norma-p di un vettore o di una matrice
+-> np.linalg.cond(A, p): Calcola il numero di condizionamento di una matrice in norma p
+-> np.linalg.matrix_rank(A): Calcola il rango della matrice A;
+-> np.linalg.inv(A): Calcola l’inverso della matrice A, quando esiste. 
+    ATTENZIONE: Questa operazione è molto lenta anche per matrici relativamente piccole;
+-> np.transpose(A): Calcola la trasposta della matrice A. E’ equivalente a A.T;
+-> np.reshape(a, new_shape): Modifica la shape di un ndarray a, nella forma specificata.
+'''
+gg = np.linspace(1, 9, 9)   # (1, 2, 3, 4, 5, 6, 7, 8, 9)
+print(gg)
+CC = np.reshape(gg, (3, 3)) # Costruiamo la matrice CC di shape 3x3 ottenuta modificando gg
+print(CC)
+
+print(np.linalg.matrix_rank(CC))    # Controlliamo se CC è di rango massimo
+# E, se non ha rango massimo, calcoliamone l'inversa
+if np.linalg.matrix_rank(CC) == CC.shape[0]:
+    CC_inv = np.linalg.inv(CC)
 
 
+'''
+EFFICIENZA DI NUMPY
+L’obiettivo di questa sezione di approfondimento è verificare in modo empirico quanto numpy 
+è più efficiente del Python classico per operazioni su vettori. Per farlo, andremo ad utilizzare la libreria time 
+per misurare il tempo richiesto a Python base e numpy per svolgere le stesse operazioni.
+In questo esempio, utilizzeremo un vettore di lunghezza 10 milioni, casuale, e proveremo a calcolare la somma 
+del valore assoluto dei suoi elementi (operazione nota come norma 1 del vettore, 
+e solitamente indicata con ||v||_1, utilizzando Python classico (attraverso due algoritmi differenti) e le funzioni di numpy.
+'''
+import time
+# import numpy as np
+import math
 
+v = np.random.randn(10_000_000) # Costruiamo il vettore
 
+# || v ||_1 con Python modo 1
+start_time = time.time()
+norma_1 = 0
+for i in range(len(v)):
+    norma_1 = norma_1 + abs(v[i])
+end_time = time.time()
+print(f"Tempo impiegato con Python modo 1: {end_time - start_time}s")
 
+# || v ||_1 con Python modo 2
+start_time = time.time()
+norma_1 = sum((abs(i) for i in v)) # list comprehension
+end_time = time.time()
+print(f"Tempo impiegato con Python modo 2: {end_time - start_time}s")
 
+# || v ||_1 con numpy
+start_time = time.time()
+norma_1 = np.sum(np.abs(v))
+end_time = time.time()
+print(f"Tempo impiegato con Numpy: {end_time - start_time}s")
 
+'''
+Tempo impiegato con Python modo 1: 2.772596836090088s
+Tempo impiegato con Python modo 2: 1.545154094696045s
+Tempo impiegato con Numpy: 0.054563045501708984s
 
-
-
-
-
-
-
-
-
-
-
+Da questo esempio appare chiaro come Numpy, avendo implementato funzione pre-compilate, 
+è estremamente più efficiente di Python standard, ed è quindi più preposto a eseguire operazioni di algebra lineare, 
+dove l’efficienza è importantissima.
+'''
